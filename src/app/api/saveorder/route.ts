@@ -44,11 +44,20 @@ export const POST = async (request: NextRequest) => {
       success: true,
       message: "Order saved successfully",
     });
-  } catch (error: any) {
-    console.error("Error saving order:", error);
-    return NextResponse.json({
-      success: false,
-      message: error.message || "An unexpected error occurred",
-    });
+  } catch (error: unknown) {
+    // Narrow the type of error
+    if (error instanceof Error) {
+      console.error("Error saving order:", error.message);
+      return NextResponse.json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      console.error("Unexpected error:", error);
+      return NextResponse.json({
+        success: false,
+        message: "An unexpected error occurred",
+      });
+    }
   }
 };
